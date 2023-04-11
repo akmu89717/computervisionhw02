@@ -76,10 +76,19 @@ def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterio
         ##### VALIDATION #####
         model.eval()
         print('train times',epoch)
+        #  no backpropagation
         with torch.no_grad():
             val_start_time = time.time()
             val_loss = 0.0
             val_correct = 0.0
+            for  data in enumerate(val_loader):
+                sys.stdout.write(f'\r[{epoch + 1}/{cfg.epochs}] ')
+                sys.stdout.flush()
+                images, labels = data['images'].to(device), data['labels'].to(device)
+                val = model(images)
+                loss = criterion(val, labels)
+                val_correct += torch.sum(torch.argmax(val, dim=1) == labels)
+                val_loss += loss.item()
             #############################################################
             # TODO:                                                     #
             # Finish forward part in validation, you can refer to the   #

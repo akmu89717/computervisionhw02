@@ -34,32 +34,30 @@ class MyNet(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=1)
 
          )
-        self.fc = nn.Sequential(
-            nn.Linear(64*21*21, 2048),
-            nn.ReLU(),
-            nn.Linear(2048, 1024),
-            nn.ReLU(inplace=True),
-            nn.Linear(1024, 10)
-        )       
+   
 
         # self.seq3 = nn.Sequential(
         #     nn.Conv2d(in_channels=64,out_channels=64,kernel_size= (1,10),stride = 1),
         #     nn.BatchNorm2d(64,eps=0.001,momentum=0.99),
         #     nn.ReLU(),
-        #     nn.MaxPool2d(kernel_size=[1,5],stride=[1,2])
+        #     nn.MaxPool2d(kernel_size=[2],stride=1)
         # )
 
-
-        # self.fc=nn.Sequential(
-        #     nn.Dropout1d(p=0.5),
-        #     nn.Linear(in_features=3*64*W*H,out_feature=32),
-        #     nn.BatchNorm1d(32,eps=0.001,momentum=0.99),
+        # self.fc = nn.Sequential(
+        #     nn.Linear(64*21*21, 2048),
         #     nn.ReLU(),
-        #     nn.Dropout1d(p=0.3),
-        #     nn.Linear(in_features=32,out_features=10),
-        #     nn.Softmax()
-
-        # )
+        #     nn.Linear(2048, 1024),
+        #     nn.ReLU(inplace=True),
+        #     nn.Linear(1024, 10)
+        # )    
+        self.fc=nn.Sequential(
+            nn.Dropout1d(p=0.3),
+            nn.Linear(in_features=64*21*21,out_feature=32),
+            nn.BatchNorm1d(32,eps=0.001,momentum=0.99),
+            nn.ReLU(),
+            nn.Dropout1d(p=0.3),
+            nn.Linear(in_features=32,out_features=10),
+         )
         pass
 
     def forward(self, x):

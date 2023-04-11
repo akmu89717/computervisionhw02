@@ -19,6 +19,7 @@ def get_dataloader(dataset_dir, batch_size=1, split='train'):
             # transforms.RandomRotation(45, resample=False, expand=False, center=None, fill=None),
             # others https://chih-sheng-huang821.medium.com/03-pytorch-dataaug-a712a7a7f55e
             ##### TODO: Data Augmentation End #####
+            transforms.RandomHorizontalFlip(),    # half rotate 
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
