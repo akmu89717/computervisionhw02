@@ -52,7 +52,7 @@ class MyNet(nn.Module):
         # )    
         self.fc=nn.Sequential(
             nn.Dropout1d(p=0.3),
-            nn.Linear(in_features=64*21*21,out_feature=32),
+            nn.Linear(in_features=64*21*21,out_features=32),
             nn.BatchNorm1d(32,eps=0.001,momentum=0.99),
             nn.ReLU(),
             nn.Dropout1d(p=0.3),
