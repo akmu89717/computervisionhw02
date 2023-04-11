@@ -15,6 +15,12 @@ from utils import set_seed, write_config_log, write_result_log
 import config as cfg
 
 def plot_learning_curve(logfile_dir, result_lists):
+    # title="Learning Curves"
+    # plt.figure()
+    # plt.title(title)
+    # plt.xlabel("Training examples")
+    # plt.ylabel("Score")
+
     ################################################################
     # TODO:                                                        #
     # Plot and save the learning curves under logfile_dir, you can #
@@ -75,15 +81,13 @@ def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterio
 
         ##### VALIDATION #####
         model.eval()
-        print('train times',epoch)
+        print('in val')
         #  no backpropagation
         with torch.no_grad():
             val_start_time = time.time()
             val_loss = 0.0
             val_correct = 0.0
             for  data in enumerate(val_loader):
-                sys.stdout.write(f'\r[{epoch + 1}/{cfg.epochs}] ')
-                sys.stdout.flush()
                 images, labels = data['images'].to(device), data['labels'].to(device)
                 val = model(images)
                 loss = criterion(val, labels)
@@ -109,7 +113,7 @@ def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterio
         val_loss_list.append(val_loss)
 
         print(f'[{epoch + 1}/{cfg.epochs}] {val_time:.2f} sec(s) Val Acc: {val_acc:.5f} | Val Loss: {val_loss:.5f}')
-        
+        print("out val")
         # Scheduler step
         scheduler.step()
 
@@ -117,7 +121,7 @@ def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterio
         is_better = val_acc >= best_acc
         epoch_time = train_time + val_time
         write_result_log(os.path.join(logfile_dir, 'result_log.txt'), epoch, epoch_time, train_acc, val_acc, train_loss, val_loss, is_better)
-
+        
         ##### SAVE THE BEST MODEL #####
         if is_better:
             print(f'[{epoch + 1}/{cfg.epochs}] Save best model to {model_save_dir} ...')
