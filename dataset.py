@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 from torch.utils.data.dataset import Dataset
 from torch.utils.data import DataLoader
 from PIL import Image
-
+import numpy as np
 def get_dataloader(dataset_dir, batch_size=1, split='train'):
     ###############################
     # TODO:                       #
@@ -75,19 +75,14 @@ class CIFAR10Dataset(Dataset):
         ########################################################
         convert_tensor = transforms.ToTensor()
         read_image=Image.open(os.path.join(self.dataset_dir,self.image_names[index]))
-        # read_image.show()
+        # read_image=np.array(Image.open(os.path.join(self.dataset_dir,self.image_names[index])),np.float32)
+        # x_train_tensor = torch.from_numpy(read_image)
         # image=convert_tensor(read_image).long()
         image=convert_tensor(read_image)
-        # transform = transforms.Compose([transforms.PILToTensor()])
-        # image = transform(read_image)
-        # image=
         # label = (self.labels[index])
         label=torch.tensor(self.labels[index], dtype=torch.long) 
-        # label=torch.tensor(self.labels[index])
+        label=torch.tensor(self.labels[index])
         # print(label)
-        # trainloader = torch.utils.data.Dataloader(image_take,batch_size=4,shuffle=True,num_workers=2)
-        # print('image',image.shape)
-        # print('label',label)
         pass
 
         return {

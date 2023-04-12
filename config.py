@@ -11,7 +11,7 @@ exp_name   = 'sgd_pre_da' # name of experiment
 model_type = 'mynet' # 'mynet' or 'resnet18'
 
 # Learning Options
-epochs     = 3           # train how many epochs
+epochs     = 50           # train how many epochs
 batch_size = 32           # batch size for dataloader 
 use_adam   = False        # Adam or SGD optimizer
 lr         = 1e-2         # learning rate

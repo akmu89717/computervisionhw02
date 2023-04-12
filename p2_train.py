@@ -59,6 +59,7 @@ def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterio
             sys.stdout.flush()
             # Data loading.。。
             images, labels = data['images'].to(device), data['labels'].to(device) # (batch_size, 3, 32, 32), (batch_size)
+            # print('images type',type(images))
             # Forward pass. input: (batch_size, 3, 32, 32), output: (batch_size, 10)
             pred = model(images)
             # Calculate loss.
@@ -87,10 +88,11 @@ def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterio
             val_start_time = time.time()
             val_loss = 0.0
             val_correct = 0.0
-            for  data in enumerate(val_loader):
+            for  batch,data in enumerate(val_loader):
                 images, labels = data['images'].to(device), data['labels'].to(device)
+                
                 val = model(images)
-                loss = criterion(val, labels)
+                loss = criterion(val,labels)
                 val_correct += torch.sum(torch.argmax(val, dim=1) == labels)
                 val_loss += loss.item()
             #############################################################
@@ -170,9 +172,10 @@ def main():
     os.makedirs(model_save_dir, exist_ok=True)
 
     if cfg.model_type == 'mynet':
-        model = MyNet()
+        model = MyNet().to(device)
+        # print(model.state_dict())
     elif cfg.model_type == 'resnet18':
-        model = ResNet18()
+        model = ResNet18().to(device)
     else:
         raise NameError('Unknown model type')
 
@@ -182,6 +185,10 @@ def main():
     ##### TODO: check dataset.py #####
     train_loader = get_dataloader(os.path.join(dataset_dir, 'train'), batch_size=cfg.batch_size, split='train')
     val_loader   = get_dataloader(os.path.join(dataset_dir, 'val'), batch_size=cfg.batch_size, split='val')
+    # train_loader_1=[i for i in enumerate(val_loader)]
+    print("type",type(val_loader))
+    
+    
 
     ##### LOSS & OPTIMIZER #####
     criterion = nn.CrossEntropyLoss()
