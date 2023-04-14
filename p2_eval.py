@@ -10,7 +10,8 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--csv_path', help='predicted csv file path', type=str, default='./output/pred.csv')
-    parser.add_argument('--annos_path', help='ground truth json file path', type=str, default='../hw2_data/p2_data/val/annotations.json')
+    parser.add_argument('--annos_path', help='ground truth json file path', type=str, default='./val/annotations.json')
+    # parser.add_argument('--annos_path', help='ground truth json file path', type=str, default='../hw2_data/p2_data/val/annotations.json')
     args = parser.parse_args()
 
     pred_files, pred_labels = read_csv(args.csv_path)

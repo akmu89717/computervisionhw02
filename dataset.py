@@ -14,12 +14,15 @@ def get_dataloader(dataset_dir, batch_size=1, split='train'):
     ###############################
     if split == 'train':
         transform = transforms.Compose([
-            transforms.Resize((32,32)),
+
             ##### TODO: Data Augmentation Begin #####
             # transforms.RandomRotation(45, resample=False, expand=False, center=None, fill=None),
             # others https://chih-sheng-huang821.medium.com/03-pytorch-dataaug-a712a7a7f55e
             ##### TODO: Data Augmentation End #####
-            transforms.RandomHorizontalFlip(),    # half rotate 
+            transforms.RandomHorizontalFlip(p=0.3),    # half rotate 
+            transforms.ColorJitter(saturation=0.1),
+            transforms.GaussianBlur(3, sigma=(1)),
+            transforms.Resize((32,32)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])

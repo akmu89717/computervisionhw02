@@ -11,13 +11,6 @@ class MyNet(nn.Module):
         # Define your CNN model architecture. Note that the first      #
         # input channel is 3, and the output dimension is 10 (class).  #
         ################################################################
-
-        # self.conv1 = nn.Conv2d(1, 6, (5, 5))   # output (N, C_{out}, H_{out}, W_{out})`
-        # self.conv2 = nn.Conv2d(6, 16, (5, 5))
-        # self.fc1 = nn.Linear(256, 120)
-        # self.fc2 = nn.Linear(120, 84)
-        # self.fc3 = nn.Linear(84, 10)
-        # self.se=nn.Conv2d(in_channels=3,out_channels=3,kernel_size= (5,5),stride = 1)
         
         self.seq1=nn.Sequential(
             nn.Conv2d(in_channels=3,out_channels=16,kernel_size= (5,5),stride = 1),
@@ -66,22 +59,22 @@ class MyNet(nn.Module):
         # TODO:                                  #
         # Define the forward path of your model. #
         ##########################################
+
         # x=self.se(x)
-        # print(x.shape)
         x = self.seq1(x)
-        # print('seq1\n',x.shape)
         x = self.seq2(x)
-        # print('seq2\n',x.shape)
         x = x.view(x.size(0),-1)
         x = self.fc(x)
-        # print('fc\n',x.shape)
-        x = nn.functional .softmax(x,-1)
-        # print("sof.shape\n",x.shape)
+
+        # x = nn.functional .softmax(x,-1)
+
         # pass
         return x
     
 class ResNet18(nn.Module):
     def __init__(self):
+        # model = ResNet18();
+        
         super(ResNet18, self).__init__()
         ############################################
         # NOTE:                                    #
@@ -89,8 +82,13 @@ class ResNet18(nn.Module):
         ############################################
 
         # (batch_size, 3, 32, 32)
-        self.resnet = models.resnet18(pretrained=True)
+        weights = models.ResNet18_Weights.IMAGENET1K_V1
+        self.resnet = models.resnet18(weights)
+        # print(self.resnet)
         # (batch_size, 512)
+
+        self.resnet.conv1=nn. Conv2d(3, 64, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), bias=False)
+        self.resnet.maxpool=Identity()
         self.resnet.fc = nn.Linear(self.resnet.fc.in_features, 10)
         # (batch_size, 10)
 
@@ -102,7 +100,10 @@ class ResNet18(nn.Module):
         #   2. remove the first maxpool layer (i.e. replace with Identity())  #
         # You can run model.py for resnet18's detail structure                #
         #######################################################################
-        
+
+
+
+
 
     def forward(self, x):
         return self.resnet(x)
@@ -110,10 +111,12 @@ class ResNet18(nn.Module):
 class Identity(nn.Module):
     def __init__(self):
         super(Identity, self).__init__()
+
         
     def forward(self, x):
         return x
     
 if __name__ == '__main__':
     model = ResNet18()
+    
     print(model)

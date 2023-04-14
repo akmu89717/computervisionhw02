@@ -3,7 +3,7 @@ import sys
 import time
 import argparse
 from datetime import datetime
-
+import numpy as np
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
@@ -15,11 +15,7 @@ from utils import set_seed, write_config_log, write_result_log
 import config as cfg
 
 def plot_learning_curve(logfile_dir, result_lists):
-    # title="Learning Curves"
-    # plt.figure()
-    # plt.title(title)
-    # plt.xlabel("Training examples")
-    # plt.ylabel("Score")
+    filepath=os.path.join(logfile_dir, 'result_log.txt')
 
     ################################################################
     # TODO:                                                        #
@@ -39,7 +35,101 @@ def plot_learning_curve(logfile_dir, result_lists):
     # plot being unsaved if early stop, so the result_lists's size #
     # is not fixed.                                                #
     ################################################################
+    f= open(filepath, 'r')
+    train_acc=[]
+    train_loss=[]
+    val_acc=[]
+    val_loss=[]
+    epo=0
+    for line in f.readlines():
+        epo+=1
+        train_acc.append(float(line[line.find('Train Acc')+11:line.find('Train Acc')+18]))
+        train_loss.append(float(line[line.find('Train Loss')+12:line.find('Train Loss')+19]))
+        val_acc.append(float(line[line.find('Val Acc')+9:line.find('Val Acc')+17]))
+        val_loss.append(float(line[line.find('Val Loss')+10:line.find('Val Loss')+17]))
+    epoch=np.arange(1,epo+1)
+
+
+    fig = plt.figure()
+    # plt.subplot(221)
+    f1 = np.polyfit(epoch, train_acc, 5)
+    p1 = np.poly1d(f1)
+    yvals1=p1(epoch)
+    plt.plot(epoch, train_acc, 'ro', label='train acc')
+    plt.plot(epoch, yvals1, 'r',label='polyfit train acc')
+    plt.xlabel('epoch')
+    plt.ylabel('Accuracy')
+    plt.title('Train Accuracy')
+    plt.legend()
+    if cfg.model_type == 'mynet':
+        plt.savefig('mynet_Train_Accuracy.png')
+        # print(model.state_dict())
+    elif cfg.model_type == 'resnet18':
+        plt.savefig('ResNet18_Train_Accuracy.png')
     
+    # plt.show()
+    # fig.close()
+    # plt.subplot(222)
+    fig = plt.figure()
+    f1 = np.polyfit(epoch, train_loss, 5)
+    p1 = np.poly1d(f1)
+    yvals1=p1(epoch)
+    plt.plot(epoch, train_loss, 'ro', label='train loss')
+    plt.plot(epoch, yvals1, 'r',label='polyfit train loss')
+    plt.xlabel('epoch')
+    plt.ylabel('Error')
+    plt.title('Train loss')
+    plt.legend()
+    if cfg.model_type == 'mynet':
+        plt.savefig('mynet_Train_loss.png')
+        # print(model.state_dict())
+    elif cfg.model_type == 'resnet18':
+        plt.savefig('ResNet18_Train_loss.png')
+    
+    # plt.show()
+    # fig.close()
+
+    # plt.subplot(223)
+    fig = plt.figure()
+    f1 = np.polyfit(epoch, val_acc, 5)
+    p1 = np.poly1d(f1)
+    yvals1=p1(epoch)
+    plt.plot(epoch, val_acc, 'ro', label='Val Accuracy')
+    plt.plot(epoch, yvals1, 'r',label='polyfit Val Accuracy')
+    plt.xlabel('epoch')
+    plt.ylabel('Accuracy')
+    plt.title('Val Accuracy')
+    plt.legend()
+    if cfg.model_type == 'mynet':
+        plt.savefig('mynet_Val_Accuracy.png')
+        # print(model.state_dict())
+    elif cfg.model_type == 'resnet18':
+        plt.savefig('ResNet18_Val_Accuracy.png')
+    # plt.show()
+    # fig.close()
+
+    # plt.subplot(224)
+    fig = plt.figure()
+    f1 = np.polyfit(epoch, val_loss, 5)
+    p1 = np.poly1d(f1)
+    yvals1=p1(epoch)
+    plt.plot(epoch, val_loss, 'ro', label='Val Loss')
+    plt.plot(epoch, yvals1, 'r',label='polyfit Val Loss')
+    plt.xlabel('epoch')
+    plt.ylabel('Error')
+    plt.title('Val Loss')
+    plt.legend()
+    plt.tight_layout() 
+    if cfg.model_type == 'mynet':
+        plt.savefig('mynet_Val_Loss.png')
+        # print(model.state_dict())
+    elif cfg.model_type == 'resnet18':
+        plt.savefig('ResNet18_Val_Loss.png')
+    
+    # plt.show()
+    # fig.close()
+
+    # plt.show()
     pass
 
 def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterion, optimizer, scheduler, device):
@@ -59,7 +149,6 @@ def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterio
             sys.stdout.flush()
             # Data loading.。。
             images, labels = data['images'].to(device), data['labels'].to(device) # (batch_size, 3, 32, 32), (batch_size)
-            # print('images type',type(images))
             # Forward pass. input: (batch_size, 3, 32, 32), output: (batch_size, 10)
             pred = model(images)
             # Calculate loss.
@@ -115,7 +204,7 @@ def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterio
         val_loss_list.append(val_loss)
 
         print(f'[{epoch + 1}/{cfg.epochs}] {val_time:.2f} sec(s) Val Acc: {val_acc:.5f} | Val Loss: {val_loss:.5f}')
-        print("out val")
+        # print("out val")
         # Scheduler step
         scheduler.step()
 
@@ -129,6 +218,9 @@ def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterio
             print(f'[{epoch + 1}/{cfg.epochs}] Save best model to {model_save_dir} ...')
             torch.save(model.state_dict(), os.path.join(model_save_dir, 'model_best.pth'))
             best_acc = val_acc
+
+
+
 
         ##### PLOT LEARNING CURVE #####
         ##### TODO: check plot_learning_curve() in this file #####
