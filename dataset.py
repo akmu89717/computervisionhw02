@@ -80,11 +80,13 @@ class CIFAR10Dataset(Dataset):
         read_image=Image.open(os.path.join(self.dataset_dir,self.image_names[index]))
         image=convert_tensor(read_image)
         # label=torch.tensor(self.labels[index], dtype=torch.long) 
-        label=torch.tensor(self.labels[index])
-        # print(label)
-        pass
-
-        return {
-            'images': image, 
-            'labels': label
-        }
+        if self.split != 'test':
+            label=torch.tensor(self.labels[index])
+            return {
+                'images': image, 
+                'labels': label
+            }            
+        else:
+            return {
+                'images': image, 
+            }

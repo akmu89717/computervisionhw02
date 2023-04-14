@@ -12,7 +12,7 @@ from utils import write_csv
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--test_datadir', help='test dataset directory', type=str, default='../hw2_data/p2_data/val/')
+    parser.add_argument('--test_datadir', help='test dataset directory', type=str, default='./val/')
     parser.add_argument('--model_type', help='mynet or resnet18', type=str, default='resnet18')
     parser.add_argument('--output_path', help='output csv file path', type=str, default='./output/pred.csv')
     args = parser.parse_args()
@@ -47,6 +47,11 @@ def main():
     model.eval()
     with torch.no_grad():
         test_start_time = time.time()
+        for batch, data  in enumerate(test_loader):
+            image=data['images'].to(device)
+            pred = model(image)
+            prelab=torch.argmax(pred)
+            predictions.append(prelab.item())
         #############################################################
         # TODO:                                                     #
         # Finish forward part in inference process, similar to      #
