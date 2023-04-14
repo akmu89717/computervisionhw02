@@ -49,9 +49,8 @@ def plot_learning_curve(logfile_dir, result_lists):
         val_loss.append(float(line[line.find('Val Loss')+10:line.find('Val Loss')+17]))
     epoch=np.arange(1,epo+1)
 
-
+    ## ploy Train Accuracy
     fig = plt.figure()
-    # plt.subplot(221)
     f1 = np.polyfit(epoch, train_acc, 5)
     p1 = np.poly1d(f1)
     yvals1=p1(epoch)
@@ -66,10 +65,7 @@ def plot_learning_curve(logfile_dir, result_lists):
         # print(model.state_dict())
     elif cfg.model_type == 'resnet18':
         plt.savefig('ResNet18_Train_Accuracy.png')
-    
-    # plt.show()
-    # fig.close()
-    # plt.subplot(222)
+    ## ploy Train_loss
     fig = plt.figure()
     f1 = np.polyfit(epoch, train_loss, 5)
     p1 = np.poly1d(f1)
@@ -82,14 +78,10 @@ def plot_learning_curve(logfile_dir, result_lists):
     plt.legend()
     if cfg.model_type == 'mynet':
         plt.savefig('mynet_Train_loss.png')
-        # print(model.state_dict())
     elif cfg.model_type == 'resnet18':
         plt.savefig('ResNet18_Train_loss.png')
     
-    # plt.show()
-    # fig.close()
-
-    # plt.subplot(223)
+    ## plot Val_Accuracy
     fig = plt.figure()
     f1 = np.polyfit(epoch, val_acc, 5)
     p1 = np.poly1d(f1)
@@ -102,13 +94,10 @@ def plot_learning_curve(logfile_dir, result_lists):
     plt.legend()
     if cfg.model_type == 'mynet':
         plt.savefig('mynet_Val_Accuracy.png')
-        # print(model.state_dict())
     elif cfg.model_type == 'resnet18':
         plt.savefig('ResNet18_Val_Accuracy.png')
-    # plt.show()
-    # fig.close()
 
-    # plt.subplot(224)
+    ## plot Val_Loss
     fig = plt.figure()
     f1 = np.polyfit(epoch, val_loss, 5)
     p1 = np.poly1d(f1)
@@ -126,10 +115,6 @@ def plot_learning_curve(logfile_dir, result_lists):
     elif cfg.model_type == 'resnet18':
         plt.savefig('ResNet18_Val_Loss.png')
     
-    # plt.show()
-    # fig.close()
-
-    # plt.show()
     pass
 
 def train(model, train_loader, val_loader, logfile_dir, model_save_dir, criterion, optimizer, scheduler, device):

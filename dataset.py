@@ -78,12 +78,8 @@ class CIFAR10Dataset(Dataset):
         ########################################################
         convert_tensor = transforms.ToTensor()
         read_image=Image.open(os.path.join(self.dataset_dir,self.image_names[index]))
-        # read_image=np.array(Image.open(os.path.join(self.dataset_dir,self.image_names[index])),np.float32)
-        # x_train_tensor = torch.from_numpy(read_image)
-        # image=convert_tensor(read_image).long()
         image=convert_tensor(read_image)
-        # label = (self.labels[index])
-        label=torch.tensor(self.labels[index], dtype=torch.long) 
+        # label=torch.tensor(self.labels[index], dtype=torch.long) 
         label=torch.tensor(self.labels[index])
         # print(label)
         pass

@@ -84,9 +84,6 @@ def plot_learning_curve(logfile_dir, result_lists):
     plt.ylabel('Error')
     plt.title('Val Loss')
     plt.legend()
-    # plt.show()
-    # f.close()
-
     plt.show()
 
 
